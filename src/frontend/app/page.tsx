@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-type BackendInfo = { demoMessage: string };
+type BackendInfo = { demoMessage: string; frontendMessage: string };
 
 export default function HomePage() {
-  const [message, setMessage] = useState<string | null>(null);
+  const [info, setInfo] = useState<BackendInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
@@ -14,7 +14,7 @@ export default function HomePage() {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    setMessage(null);
+    setInfo(null);
     setError(null);
 
     async function load() {
@@ -25,7 +25,7 @@ export default function HomePage() {
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data: BackendInfo = await response.json();
-        if (!controller.signal.aborted) setMessage(data.demoMessage);
+        if (!controller.signal.aborted) setInfo(data);
       } catch (cause: unknown) {
         if (!controller.signal.aborted) {
           setError(cause instanceof Error ? cause.message : '取得できませんでした');
@@ -42,8 +42,11 @@ export default function HomePage() {
   return (
     <main>
       <h1>Sample</h1>
-      <p>Next.js（ビルド時）：{process.env.NEXT_PUBLIC_DEMO_MESSAGE ?? '（未設定）'}</p>
-      <p aria-live="polite">C#（実行時）：{loading ? '取得中…' : message ?? '—'}</p>
+      <h2>ビルド時に固定される文字</h2>
+      <p>{process.env.NEXT_PUBLIC_DEMO_MESSAGE ?? '（未設定）'}</p>
+      <h2>実行時に取得する文字</h2>
+      <p aria-live="polite">{loading ? '取得中…' : info?.frontendMessage ?? '—'}</p>
+      <p aria-live="polite">C#（実行時）：{loading ? '取得中…' : info?.demoMessage ?? '—'}</p>
       {error ? <p role="alert">取得失敗：{error}</p> : null}
       <button type="button" disabled={loading} onClick={() => setReload((value) => value + 1)}>
         再取得

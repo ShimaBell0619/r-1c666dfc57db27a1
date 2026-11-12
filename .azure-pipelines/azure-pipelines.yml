@@ -14,6 +14,9 @@ parameters:
   - name: backendMessage
     type: string
     default: from-runtime
+  - name: frontendRuntimeMessage
+    type: string
+    default: from-runtime-ui
 
 pool:
   vmImage: ubuntu-24.04
@@ -41,3 +44,4 @@ stages:
               connection: ${{ parameters.serviceConnection }}
               app: ${{ parameters.appName }}
               message: ${{ parameters.backendMessage }}
+              frontendMessage: ${{ parameters.frontendRuntimeMessage }}
