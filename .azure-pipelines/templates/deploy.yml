@@ -1,0 +1,17 @@
+parameters:
+  - name: connection
+    type: string
+  - name: app
+    type: string
+  - name: message
+    type: string
+
+steps:
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: ${{ parameters.connection }}
+      appType: webApp
+      appName: ${{ parameters.app }}
+      package: $(Pipeline.Workspace)/app/app.zip
+      deploymentMethod: zipDeploy
+      appSettings: '-DEMO_MESSAGE "${{ parameters.message }}"'

@@ -1,0 +1,43 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: serviceConnection
+    type: string
+    default: azure-connection
+  - name: appName
+    type: string
+    default: sample-app
+  - name: frontendMessage
+    type: string
+    default: from-build
+  - name: backendMessage
+    type: string
+    default: from-runtime
+
+pool:
+  vmImage: ubuntu-24.04
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+          - checkout: self
+          - template: templates/build.yml
+            parameters:
+              message: ${{ parameters.frontendMessage }}
+
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - job: Deploy
+        steps:
+          - checkout: none
+          - download: current
+            artifact: app
+          - template: templates/deploy.yml
+            parameters:
+              connection: ${{ parameters.serviceConnection }}
+              app: ${{ parameters.appName }}
+              message: ${{ parameters.backendMessage }}

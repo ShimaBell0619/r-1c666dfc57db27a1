@@ -1,0 +1,19 @@
+parameters:
+  - name: message
+    type: string
+
+steps:
+  - task: UseNode@1
+    inputs:
+      version: '24.x'
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: '10.0.x'
+  - bash: bash scripts/build.sh
+    displayName: Build and package
+    env:
+      NEXT_PUBLIC_DEMO_MESSAGE: ${{ parameters.message }}
+      NEXT_TELEMETRY_DISABLED: '1'
+  - publish: $(Build.SourcesDirectory)/artifacts/app.zip
+    artifact: app

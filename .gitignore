@@ -1,0 +1,15 @@
+src/frontend/node_modules/
+src/frontend/.next/
+src/frontend/out/
+src/frontend/.env*
+!src/frontend/.env.example
+**/bin/
+**/obj/
+src/backend/wwwroot/*
+!src/backend/wwwroot/.gitkeep
+artifacts/
+*.tsbuildinfo
+*.user
+.vs/
+.vscode/
+.DS_Store
